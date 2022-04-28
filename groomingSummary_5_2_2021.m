@@ -25,28 +25,59 @@ for k = 1 : length(theFiles)
   grooming_scores_summary{2+(3*k),3} = 'Bout duration';
   
    grooming_scores_summary{(3*k),1} = baseFileName;
+   
 %    grooming_scores_summary{1+(2*k),1} = baseFileName;
    grooming_scores_summary{(3*k),2} = amountOfGroomings;
 %    grooming_scores_summary{1+(2*k),2} = amountOfGroomings;
-% 
+
 %   
      for m = 1 : length(groomingBoutStartFrames{1,1})
 %   
      grooming_scores_summary{3*k,3+m} =   groomingBoutStartFrames{1,1}(1,m);
      grooming_scores_summary{1+(3*k),3+m} =   groomingBoutStopFrames{1,1}(1,m);
-     end  
-%   
+    
+     
+     startStopframes = {groomingBoutStartFrames{1,1};groomingBoutStopFrames{1,1}};
+   
+     boutDurations = startStopframes{2,1}-startStopframes{1,1};
+     averageBoutDuration = mean(boutDurations);
+     totalBoutDuration = sum(boutDurations);
 
- 
+     grooming_scores_summary{2+(3*k),3+m} =   boutDurations(1,m);
+     
+     end  
+     
+   grooming_scores_summary{2+(3*k),5+m} =   mean(boutDurations);  
+   grooming_scores_summary{2+(3*k),6+m} =   sum(boutDurations);  
+   
+  
+   %summary data tab
+   data_summary{1,1} = 'File Name';
+   data_summary{1,2} = 'Amount of bouts';
+   data_summary{1,3} = 'Average bout duration';
+   data_summary{1,4} = 'Total bout duration';
+   
+   data_summary{(1+k),1} = baseFileName;
+   data_summary{(1+k),2} = amountOfGroomings;
+   data_summary{(1+k),3} = mean(boutDurations);  
+   data_summary{(1+k),4} = sum(boutDurations); 
+   
+   
 end
 
-%saving all data in an excel file
-nameOfVariable = 'grooming_scores_summary';
-outputFolder = uigetdir();
-fullPath=fullfile([char(outputFolder)], [nameOfVariable '.xls']);
-xlswrite(fullPath, grooming_scores_summary);
 
-clear
+%saving data
+writecell(grooming_scores_summary,myFolder + "\" + "Grooming_scores_summary.xls",'sheet',1)
+writecell(data_summary,myFolder + "\" + "Grooming_scores_summary.xls",'sheet',2)
+
+
+%saving all data in an excel file
+%nameOfVariable = 'grooming_scores_summary';
+%outputFolder = uigetdir();
+%fullPath=fullfile([char(outputFolder)], [nameOfVariable '.xls']);
+%xlswrite(fullPath, grooming_scores_summary);
+
+
 
 msgbox('Done!');
-
+clear
